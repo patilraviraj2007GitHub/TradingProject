@@ -1,0 +1,113 @@
+{
+	"info": {
+		"_postman_id": "f76df78c-563d-46be-bb3a-d96118dcd94f",
+		"name": "TradeStore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetAllTrades",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/trades/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"trades",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSingleTrade",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/trades/:tradeId/:Version",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"trades",
+						":tradeId",
+						":Version"
+					],
+					"variable": [
+						{
+							"key": "tradeId",
+							"value": "T2"
+						},
+						{
+							"key": "Version",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TradeNow",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tradeId\": \"T8\",\r\n    \"version\": 2,\r\n    \"counterPartyId\": \"CP-2\",\r\n    \"bookId\": \"B1\",\r\n    \"maturityDate\": \"2021-09-07\"    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/trades/tradeNow",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"trades",
+						"tradeNow"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

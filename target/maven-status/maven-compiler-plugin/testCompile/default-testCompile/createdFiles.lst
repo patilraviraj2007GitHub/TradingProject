@@ -1,0 +1,5 @@
+com\tradestore\trading\TradingApplicationTests.class
+com\tradestore\trading\TestHelper.class
+com\tradestore\trading\controller\TradeControllerTests.class
+com\tradestore\trading\service\TradeServiceTests.class
+com\tradestore\trading\repository\TradeRepositoryTests.class
