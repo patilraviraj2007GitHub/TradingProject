@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.tradestore.trading.repository.TradeRepositoryTests
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.706 s - in com.tradestore.trading.repository.TradeRepositoryTests

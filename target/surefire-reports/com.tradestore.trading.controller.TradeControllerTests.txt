@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.tradestore.trading.controller.TradeControllerTests
--------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.786 s - in com.tradestore.trading.controller.TradeControllerTests
