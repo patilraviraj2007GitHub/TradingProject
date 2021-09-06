@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/trades/all",
+					"raw": "http://localhost:8080/api/v1/trades",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -20,8 +20,7 @@
 					"path": [
 						"api",
 						"v1",
-						"trades",
-						"all"
+						"trades"
 					]
 				}
 			},
@@ -85,7 +84,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"tradeId\": \"T8\",\r\n    \"version\": 2,\r\n    \"counterPartyId\": \"CP-2\",\r\n    \"bookId\": \"B1\",\r\n    \"maturityDate\": \"2021-09-07\"    \r\n}",
+					"raw": "{\r\n    \"tradeId\": \"T8\",\r\n    \"version\": 1,\r\n    \"counterPartyId\": \"CP-2\",\r\n    \"bookId\": \"B1\",\r\n    \"maturityDate\": \"2021-09-09\"    \r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -93,7 +92,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/trades/tradeNow",
+					"raw": "http://localhost:8080/api/v1/trades",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -102,8 +101,7 @@
 					"path": [
 						"api",
 						"v1",
-						"trades",
-						"tradeNow"
+						"trades"
 					]
 				}
 			},

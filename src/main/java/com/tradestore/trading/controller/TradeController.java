@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/trades/")
+@RequestMapping("/api/v1/trades")
 public class TradeController {
     private static final Logger logger = LoggerFactory.getLogger(TradeController.class);
     private final TradeService tradeService;
@@ -24,7 +24,7 @@ public class TradeController {
         this.tradeService = tradeService;
     }
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<List<TradeDto>> getAllTrades() {
         List<TradeDto> list = tradeService.getAllTrades();
         logger.info("Retrieving all trades, Total Trades:{}", list.size());
@@ -40,7 +40,7 @@ public class TradeController {
         return new ResponseEntity<>(tradeDetails, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @PostMapping("/tradeNow")
+    @PostMapping()
     public ResponseEntity<TradeDto> createOrUpdateTrade(@RequestBody TradeDto trade) throws InvalidTradeException {
         TradeDto updated = tradeService.createOrUpdateTrade(trade);
         logger.info("Trade Created/Updated  TradeId: {} and Version:{}", updated.getTradeId(), updated.getVersion());

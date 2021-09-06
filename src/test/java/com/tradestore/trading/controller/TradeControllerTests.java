@@ -64,9 +64,9 @@ public class TradeControllerTests {
     @SneakyThrows
     @Test
     @Description("Find all Trades ")
-    public void getAllProduct() {
+    public void getAllTrades() {
         when(tradeService.getAllTrades()).thenReturn(tradeDtoList);
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/trades/all").
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/trades").
                         contentType(MediaType.APPLICATION_JSON).
                         content(TestHelper.asJsonString(tradeDto))).
                 andDo(MockMvcResultHandlers.print());
@@ -89,7 +89,7 @@ public class TradeControllerTests {
     @Description("Create or Update Trade")
     public void createOrUpdateTrade() throws Exception{
         when(tradeService.createOrUpdateTrade(any())).thenReturn(tradeDto);
-        mockMvc.perform(post("/api/v1/trades/tradeNow").
+        mockMvc.perform(post("/api/v1/trades").
                         contentType(MediaType.APPLICATION_JSON).
                         content(TestHelper.asJsonString(tradeDto))).
                 andExpect(status().isOk());
@@ -111,7 +111,7 @@ public class TradeControllerTests {
     @Description("Trying to add or update trade with non future maturity date, throwing exception")
     public void createOrUpdateTrade_Trade_Having_Past_MaturityDate_Should_Throw_Error() throws Exception{
         when(tradeService.createOrUpdateTrade(any())).thenThrow(invalidTradeExceptionMaturityDateIssue);
-        mockMvc.perform(post("/api/v1/trades/tradeNow").
+        mockMvc.perform(post("/api/v1/trades").
                         contentType(MediaType.APPLICATION_JSON).
                         content(TestHelper.asJsonString(tradeDto))).
                 andExpect(status().isBadRequest());
@@ -122,7 +122,7 @@ public class TradeControllerTests {
     @Description("Trying to add or update trade with lower version, throwing exception")
     public void createOrUpdateTrade_Trade_Having_Lower_Version_Should_Throw_Error() throws Exception{
         when(tradeService.createOrUpdateTrade(any())).thenThrow(invalidTradeExceptionLowerVersionIssue);
-        mockMvc.perform(post("/api/v1/trades/tradeNow").
+        mockMvc.perform(post("/api/v1/trades").
                         contentType(MediaType.APPLICATION_JSON).
                         content(TestHelper.asJsonString(tradeDto))).
                 andExpect(status().isBadRequest());
