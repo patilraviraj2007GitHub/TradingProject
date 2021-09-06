@@ -9,8 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -41,10 +43,12 @@ public class TradeController {
     }
 
     @PostMapping()
-    public ResponseEntity<TradeDto> createOrUpdateTrade(@RequestBody TradeDto trade) throws InvalidTradeException {
+    public ResponseEntity<TradeDto> createOrUpdateTrade(@Valid @RequestBody TradeDto trade, BindingResult bindingResult) throws InvalidTradeException {
+        if(bindingResult.hasErrors()){
+           throw new InvalidTradeException("Validation Error: Verify the request payload details");
+        }
         TradeDto updated = tradeService.createOrUpdateTrade(trade);
         logger.info("Trade Created/Updated  TradeId: {} and Version:{}", updated.getTradeId(), updated.getVersion());
         return new ResponseEntity<>(updated, new HttpHeaders(), HttpStatus.OK);
-
     }
 }

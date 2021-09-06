@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -13,15 +15,19 @@ import java.util.Date;
 public class TradeDto {
 
     @NotNull
+    @NotBlank
     private String tradeId;
 
     @NotNull
+    @Min(value = 1)
     private int version;
 
     @NotNull
+    @NotBlank
     private String counterPartyId;
 
     @NotNull
+    @NotBlank
     private String bookId;
 
     @NotNull
