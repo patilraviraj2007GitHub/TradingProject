@@ -1,8 +1,9 @@
 package com.tradestore.trading.controller;
 
 import com.tradestore.trading.dto.TradeDto;
-import com.tradestore.trading.exceptions.InvalidTradeException;
-import com.tradestore.trading.exceptions.RecordNotFoundException;
+import com.tradestore.trading.exceptions.BusinessException;
+import com.tradestore.trading.exceptions.ErrorResponse;
+import com.tradestore.trading.exceptions.Errors;
 import com.tradestore.trading.services.TradeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class TradeController {
     }
 
     @GetMapping("/{tradeId}/{version}")
-    public ResponseEntity<TradeDto> getTradesByTradeVersionId(@PathVariable Map<String, Integer> pathVariables) throws RecordNotFoundException {
+    public ResponseEntity<TradeDto> getTradesByTradeVersionId(@PathVariable Map<String, Integer> pathVariables) throws BusinessException {
         String tradeId = String.valueOf(pathVariables.get("tradeId"));
         int version = Integer.parseInt(String.valueOf(pathVariables.get("version")));
         logger.info("Retrieving Trade with TradeId: {} and Version:{}", tradeId, version);
@@ -43,9 +44,9 @@ public class TradeController {
     }
 
     @PostMapping()
-    public ResponseEntity<TradeDto> createOrUpdateTrade(@Valid @RequestBody TradeDto trade, BindingResult bindingResult) throws InvalidTradeException {
+    public ResponseEntity<TradeDto> createOrUpdateTrade(@Valid @RequestBody TradeDto trade, BindingResult bindingResult) throws BusinessException {
         if(bindingResult.hasErrors()){
-           throw new InvalidTradeException("Validation Error: Verify the request payload details");
+           throw new BusinessException(new ErrorResponse(Errors.VALIDATION_ISSUE.getErrorCode(), Errors.VALIDATION_ISSUE.getMessage()));
         }
         TradeDto updated = tradeService.createOrUpdateTrade(trade);
         logger.info("Trade Created/Updated  TradeId: {} and Version:{}", updated.getTradeId(), updated.getVersion());

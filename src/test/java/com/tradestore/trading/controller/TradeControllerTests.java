@@ -2,9 +2,9 @@ package com.tradestore.trading.controller;
 
 import com.tradestore.trading.TestHelper;
 import com.tradestore.trading.dto.TradeDto;
+import com.tradestore.trading.exceptions.BusinessException;
+import com.tradestore.trading.exceptions.ErrorResponse;
 import com.tradestore.trading.exceptions.Errors;
-import com.tradestore.trading.exceptions.InvalidTradeException;
-import com.tradestore.trading.exceptions.RecordNotFoundException;
 import com.tradestore.trading.services.TradeService;
 import jdk.jfr.Description;
 import lombok.SneakyThrows;
@@ -42,22 +42,22 @@ public class TradeControllerTests {
 
     private TradeDto tradeDto;
     private List<TradeDto> tradeDtoList;
-    private RecordNotFoundException recordNotFoundException;
-    private InvalidTradeException invalidTradeExceptionMaturityDateIssue;
-    private InvalidTradeException invalidTradeExceptionLowerVersionIssue;
+    private BusinessException recordNotFoundException;
+    private BusinessException invalidTradeExceptionMaturityDateIssue;
+    private BusinessException invalidTradeExceptionLowerVersionIssue;
 
     @InjectMocks
     private TradeController tradeController;
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         var date1 = new Date();
-        tradeDto = new TradeDto("T1",1,"CP-1","B1",date1 ,date1,false);
+        tradeDto = new TradeDto("T1", 1, "CP-1", "B1", date1, date1, false);
         tradeDtoList = new ArrayList<>();
         tradeDtoList.add(tradeDto);
-        recordNotFoundException = new RecordNotFoundException(Errors.RECORD_ISSUE.getMessage());
-        invalidTradeExceptionMaturityDateIssue = new InvalidTradeException(Errors.MATURITY_DATE_ISSUE.getMessage());
-        invalidTradeExceptionLowerVersionIssue = new InvalidTradeException(Errors.VERSION_ISSUE.getMessage());
+        recordNotFoundException = new BusinessException(new ErrorResponse(Errors.RECORD_ISSUE.getErrorCode(), Errors.RECORD_ISSUE.getMessage()));
+        invalidTradeExceptionMaturityDateIssue = new BusinessException(new ErrorResponse(Errors.MATURITY_DATE_ISSUE.getErrorCode(), Errors.MATURITY_DATE_ISSUE.getMessage()));
+        invalidTradeExceptionLowerVersionIssue = new BusinessException(new ErrorResponse(Errors.VERSION_ISSUE.getErrorCode(), Errors.VERSION_ISSUE.getMessage()));
         mockMvc = MockMvcBuilders.standaloneSetup(tradeController).build();
     }
 
@@ -71,13 +71,13 @@ public class TradeControllerTests {
                         content(TestHelper.asJsonString(tradeDto))).
                 andDo(MockMvcResultHandlers.print());
         verify(tradeService).getAllTrades();
-        verify(tradeService,times(1)).getAllTrades();
+        verify(tradeService, times(1)).getAllTrades();
     }
 
     @Test
     @Description("Find specific Trade")
     public void getSingleTradeDetails() throws Exception {
-        when(tradeService.getTradesByCompositeTradeVersionId(tradeDto.getTradeId(),tradeDto.getVersion())).thenReturn(tradeDto);
+        when(tradeService.getTradesByCompositeTradeVersionId(tradeDto.getTradeId(), tradeDto.getVersion())).thenReturn(tradeDto);
         mockMvc.perform(get("/api/v1/trades/T1/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestHelper.asJsonString(tradeDto)))
@@ -87,45 +87,45 @@ public class TradeControllerTests {
 
     @Test
     @Description("Create or Update Trade")
-    public void createOrUpdateTrade() throws Exception{
+    public void createOrUpdateTrade() throws Exception {
         when(tradeService.createOrUpdateTrade(any())).thenReturn(tradeDto);
         mockMvc.perform(post("/api/v1/trades").
                         contentType(MediaType.APPLICATION_JSON).
                         content(TestHelper.asJsonString(tradeDto))).
                 andExpect(status().isOk());
-        verify(tradeService,times(1)).createOrUpdateTrade(any());
+        verify(tradeService, times(1)).createOrUpdateTrade(any());
     }
 
     @Test
     @Description("Retrieving specific Trade, but Not found exception thrown")
     public void getSingleTradeDetails_Failed_As_No_Record_Found() throws Exception {
-        when(tradeService.getTradesByCompositeTradeVersionId(tradeDto.getTradeId(),tradeDto.getVersion())).thenThrow(recordNotFoundException);
+        when(tradeService.getTradesByCompositeTradeVersionId(tradeDto.getTradeId(), tradeDto.getVersion())).thenThrow(recordNotFoundException);
         mockMvc.perform(get("/api/v1/trades/T1/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestHelper.asJsonString(tradeDto)))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     @Description("Trying to add or update trade with non future maturity date, throwing exception")
-    public void createOrUpdateTrade_Trade_Having_Past_MaturityDate_Should_Throw_Error() throws Exception{
+    public void createOrUpdateTrade_Trade_Having_Past_MaturityDate_Should_Throw_Error() throws Exception {
         when(tradeService.createOrUpdateTrade(any())).thenThrow(invalidTradeExceptionMaturityDateIssue);
         mockMvc.perform(post("/api/v1/trades").
                         contentType(MediaType.APPLICATION_JSON).
                         content(TestHelper.asJsonString(tradeDto))).
                 andExpect(status().isBadRequest());
-        verify(tradeService,times(1)).createOrUpdateTrade(any());
+        verify(tradeService, times(1)).createOrUpdateTrade(any());
     }
 
     @Test
     @Description("Trying to add or update trade with lower version, throwing exception")
-    public void createOrUpdateTrade_Trade_Having_Lower_Version_Should_Throw_Error() throws Exception{
+    public void createOrUpdateTrade_Trade_Having_Lower_Version_Should_Throw_Error() throws Exception {
         when(tradeService.createOrUpdateTrade(any())).thenThrow(invalidTradeExceptionLowerVersionIssue);
         mockMvc.perform(post("/api/v1/trades").
                         contentType(MediaType.APPLICATION_JSON).
                         content(TestHelper.asJsonString(tradeDto))).
                 andExpect(status().isBadRequest());
-        verify(tradeService,times(1)).createOrUpdateTrade(any());
+        verify(tradeService, times(1)).createOrUpdateTrade(any());
     }
 }

@@ -11,14 +11,9 @@ public class GlobalExceptionHandler {
     @Value(value = "${trade.unhandled.exception.message}")
     private String unhandledMessage;
 
-    @ExceptionHandler(value = InvalidTradeException.class)
-    public ResponseEntity invalidTradeException(InvalidTradeException invalidTradeException) {
-        return new ResponseEntity<String>(invalidTradeException.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = RecordNotFoundException.class)
-    public ResponseEntity invalidTradeException(RecordNotFoundException recordNotFoundException) {
-        return new ResponseEntity<String>(recordNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
+    @ExceptionHandler(value = BusinessException.class)
+    public ResponseEntity invalidTradeException(BusinessException businessException) {
+        return new ResponseEntity<Object>(businessException.getErrorResponse(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = Exception.class)

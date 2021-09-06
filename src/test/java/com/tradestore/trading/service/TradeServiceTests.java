@@ -3,7 +3,7 @@ package com.tradestore.trading.service;
 import com.tradestore.trading.dto.TradeDto;
 import com.tradestore.trading.entities.Trade;
 import com.tradestore.trading.exceptions.Errors;
-import com.tradestore.trading.exceptions.InvalidTradeException;
+import com.tradestore.trading.exceptions.BusinessException;
 import com.tradestore.trading.repository.TradeRepository;
 import com.tradestore.trading.services.TradeServiceImpl;
 import jdk.jfr.Description;
@@ -141,7 +141,7 @@ public class TradeServiceTests {
         Mockito.lenient().when(modelMapper.map(any(), any())).thenReturn(tradeDto1);
         assertThatThrownBy(() -> {
             tradeService.createOrUpdateTrade(tradeDto1);
-        }).isInstanceOf(InvalidTradeException.class).hasMessage(Errors.VERSION_ISSUE.getMessage());
+        }).isInstanceOf(BusinessException.class).hasMessage(Errors.VERSION_ISSUE.getMessage());
     }
 
     @Test()
@@ -163,6 +163,6 @@ public class TradeServiceTests {
         Mockito.lenient().when(modelMapper.map(any(), any())).thenReturn(tradeDto1);
         assertThatThrownBy(() -> {
             tradeService.createOrUpdateTrade(tradeDto1);
-        }).isInstanceOf(InvalidTradeException.class).hasMessage(Errors.MATURITY_DATE_ISSUE.getMessage());
+        }).isInstanceOf(BusinessException.class).hasMessage(Errors.MATURITY_DATE_ISSUE.getMessage());
     }
 }

@@ -3,9 +3,9 @@ package com.tradestore.trading.services;
 import com.tradestore.trading.dto.TradeDto;
 import com.tradestore.trading.entities.CompositeTradeId;
 import com.tradestore.trading.entities.Trade;
+import com.tradestore.trading.exceptions.BusinessException;
+import com.tradestore.trading.exceptions.ErrorResponse;
 import com.tradestore.trading.exceptions.Errors;
-import com.tradestore.trading.exceptions.InvalidTradeException;
-import com.tradestore.trading.exceptions.RecordNotFoundException;
 import com.tradestore.trading.repository.TradeRepository;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -41,17 +41,17 @@ public class TradeServiceImpl implements TradeService {
         return new ArrayList<>();
     }
 
-    public TradeDto createOrUpdateTrade(TradeDto incomingTrade) throws InvalidTradeException {
+    public TradeDto createOrUpdateTrade(TradeDto incomingTrade) throws BusinessException {
         if (incomingTrade.getMaturityDate().after(new Date())) {
             if (!checkHigherVersion(incomingTrade)) {
                 return insertOrUpdate(incomingTrade);
             } else {
                 logger.error(Errors.VERSION_ISSUE.getMessage());
-                throw new InvalidTradeException(Errors.VERSION_ISSUE.getMessage());
+                throw new BusinessException(new ErrorResponse(Errors.VERSION_ISSUE.getErrorCode(), Errors.VERSION_ISSUE.getMessage()));
             }
         } else {
             logger.error(Errors.MATURITY_DATE_ISSUE.getMessage());
-            throw new InvalidTradeException(Errors.MATURITY_DATE_ISSUE.getMessage());
+            throw new BusinessException(new ErrorResponse(Errors.MATURITY_DATE_ISSUE.getErrorCode(), Errors.MATURITY_DATE_ISSUE.getMessage()));
         }
     }
 
@@ -79,14 +79,14 @@ public class TradeServiceImpl implements TradeService {
         return existingTradeMaxVersion.getVersion() > incomingTrade.getVersion();
     }
 
-    public TradeDto getTradesByCompositeTradeVersionId(String tradeId, int version) throws RecordNotFoundException {
+    public TradeDto getTradesByCompositeTradeVersionId(String tradeId, int version) throws BusinessException {
         var compositeTradeVersionId = new CompositeTradeId(tradeId, version);
         Optional<Trade> existingTrades = tradeRepository.findById(compositeTradeVersionId);
         if (existingTrades.isPresent()) {
             Trade trade = existingTrades.get();
             return mapToDTO(trade);
         }
-        throw new RecordNotFoundException(Errors.RECORD_ISSUE.getMessage());
+        throw new BusinessException(new ErrorResponse( Errors.RECORD_ISSUE.getErrorCode(), Errors.RECORD_ISSUE.getMessage()));
     }
 
     public void updateTradeAsExpired() {
